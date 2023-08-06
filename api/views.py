@@ -26,6 +26,24 @@ class CmdbSerializer(serializers.Serializer):
     date = serializers.DateField(default=None)
     status = serializers.BooleanField()
 
+    def create(self, validated_data):
+        try:
+            instance = DEVICE.objects.create(**validated_data)
+            return instance
+        except Exception as e:
+            print(e)
+            return None
+
+    def update(self, instance, validated_data):
+        try:
+            DEVICE.objects.filter(pk=instance.pk).update(**validated_data)
+            instance = DEVICE.objects.get(pk=instance.pk)
+            return instance
+        except Exception as e:
+            print(e)
+            return None
+
+
 class CmdbView(APIView):
 
     def get(self,request):
@@ -34,18 +52,34 @@ class CmdbView(APIView):
         cmdb_serializer = CmdbSerializer(instance=cmdb_model,many=True)
         return Response(cmdb_serializer.data)
 
-
     def post(self,request):
 
         post_data = request.data
         cmdb_serializer = CmdbSerializer(data=post_data)
         if not cmdb_serializer.is_valid():
             return Response(cmdb_serializer.errors)
-        try:
-            print(cmdb_serializer.data)
-            print(cmdb_serializer.validated_data)
-            DEVICE.objects.create(**cmdb_serializer.validated_data)
-        except Exception as e:
-            print(e)
-            return Response(data="与现有设备信息冲突，增加设备信息失败")
+        cmdb_serializer.save()
         return Response(cmdb_serializer.data)
+
+
+class CmdbDetailView(APIView):
+
+    def get(self,request,id):
+
+        cmdb_query = DEVICE.objects.get(pk=id)
+        cmdb_serializer = CmdbSerializer(instance=cmdb_query,many=False)
+        return Response(cmdb_serializer.data)
+    def put(self,request,id):
+
+        put_data = request.data
+        cmdb_query = DEVICE.objects.get(pk=id)
+        cmdb_serializer = CmdbSerializer(instance=cmdb_query,data=put_data)
+        if not cmdb_serializer.is_valid():
+            return Response(cmdb_serializer.errors)
+        cmdb_serializer.save()
+        return Response(cmdb_serializer.data)
+    def delete(self,request,id):
+        pass
+
+
+

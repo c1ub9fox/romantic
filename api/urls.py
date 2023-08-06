@@ -1,7 +1,8 @@
 
-from django.urls import path
-from .views import CmdbView
+from django.urls import path,re_path
+from .views import CmdbView,CmdbDetailView
 
 urlpatterns = [
     path('cmdb/', CmdbView.as_view()),
+    re_path('cmdb/(\d+)',CmdbDetailView.as_view())
 ]
