@@ -5,6 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import CmdbSerializer
 from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import (
+    ListModelMixin,RetrieveModelMixin,CreateModelMixin,DestroyModelMixin,UpdateModelMixin
+)
 
 
 # Create your views here.
@@ -63,47 +66,71 @@ from rest_framework.generics import GenericAPIView
 #         pass
 
 
-class CmdbView(GenericAPIView):
+# class CmdbView(GenericAPIView):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
+#
+#     def get(self,request):
+#
+#         serializer = self.get_serializer(instance=self.get_queryset(),many=True)
+#         return Response(serializer.data)
+#
+#     def post(self,request):
+#
+#         post_data = request.data
+#         serializer = self.get_serializer(data=post_data)
+#
+#         if not serializer.is_valid():
+#             return Response(serializer.errors)
+#         serializer.save()
+#         return Response(serializer.data)
+#
+#
+# class CmdbDetailView(GenericAPIView):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
+#
+#
+#     def get(self,request,pk):
+#
+#         serializer = self.get_serializer(instance=self.get_object(),many=False)
+#         return Response(serializer.data)
+#     def put(self,request,pk):
+#
+#         put_data = request.data
+#         serializer = self.get_serializer(instance=self.get_object(),data=put_data)
+#         if not serializer.is_valid():
+#             return Response(serializer.errors)
+#         serializer.save()
+#         return Response(serializer.data)
+#     def delete(self,request,pk):
+#
+#         self.get_object().delete()
+#         return Response()
+
+class CmdbView(GenericAPIView,ListModelMixin,CreateModelMixin):
 
     queryset = DEVICE.objects.all()
     serializer_class = CmdbSerializer
 
     def get(self,request):
-
-        serializer = self.get_serializer(instance=self.get_queryset(),many=True)
-        return Response(serializer.data)
+        return self.list(request)
 
     def post(self,request):
+        return self.create(request)
 
-        post_data = request.data
-        serializer = self.get_serializer(data=post_data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors)
-        serializer.save()
-        return Response(serializer.data)
-
-
-class CmdbDetailView(GenericAPIView):
+class CmdbDetailView(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
 
     queryset = DEVICE.objects.all()
     serializer_class = CmdbSerializer
 
-
     def get(self,request,pk):
+        return self.retrieve(request)
 
-        serializer = self.get_serializer(instance=self.get_object(),many=False)
-        return Response(serializer.data)
     def put(self,request,pk):
+        return self.update(request)
 
-        put_data = request.data
-        serializer = self.get_serializer(instance=self.get_object(),data=put_data)
-        if not serializer.is_valid():
-            return Response(serializer.errors)
-        serializer.save()
-        return Response(serializer.data)
     def delete(self,request,pk):
-
-        self.get_object().delete()
-        return Response()
-
+        return self.destroy(request)
