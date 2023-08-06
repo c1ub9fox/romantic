@@ -4,9 +4,17 @@ from cmdb.models import DEVICE
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import CmdbSerializer
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.mixins import (
-    ListModelMixin,RetrieveModelMixin,CreateModelMixin,DestroyModelMixin,UpdateModelMixin
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    DestroyModelMixin,
+    UpdateModelMixin,
 )
 
 
@@ -110,27 +118,37 @@ from rest_framework.mixins import (
 #         self.get_object().delete()
 #         return Response()
 
-class CmdbView(GenericAPIView,ListModelMixin,CreateModelMixin):
+# class CmdbView(GenericAPIView,ListModelMixin,CreateModelMixin):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
+#
+#     def get(self,request):
+#         return self.list(request)
+#
+#     def post(self,request):
+#         return self.create(request)
+#
+# class CmdbDetailView(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
+#
+#     def get(self,request,pk):
+#         return self.retrieve(request)
+#
+#     def put(self,request,pk):
+#         return self.update(request)
+#
+#     def delete(self,request,pk):
+#         return self.destroy(request)
+
+class CmdbView(ListCreateAPIView):
 
     queryset = DEVICE.objects.all()
     serializer_class = CmdbSerializer
 
-    def get(self,request):
-        return self.list(request)
-
-    def post(self,request):
-        return self.create(request)
-
-class CmdbDetailView(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
+class CmdbDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = DEVICE.objects.all()
     serializer_class = CmdbSerializer
-
-    def get(self,request,pk):
-        return self.retrieve(request)
-
-    def put(self,request,pk):
-        return self.update(request)
-
-    def delete(self,request,pk):
-        return self.destroy(request)
