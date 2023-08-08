@@ -16,6 +16,7 @@ from rest_framework.mixins import (
     DestroyModelMixin,
     UpdateModelMixin,
 )
+from rest_framework.viewsets import ViewSet,ModelViewSet
 
 
 # Create your views here.
@@ -143,12 +144,28 @@ from rest_framework.mixins import (
 #     def delete(self,request,pk):
 #         return self.destroy(request)
 
-class CmdbView(ListCreateAPIView):
+# class CmdbView(ListCreateAPIView):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
+#
+# class CmdbDetailView(RetrieveUpdateDestroyAPIView):
+#
+#     queryset = DEVICE.objects.all()
+#     serializer_class = CmdbSerializer
 
-    queryset = DEVICE.objects.all()
-    serializer_class = CmdbSerializer
 
-class CmdbDetailView(RetrieveUpdateDestroyAPIView):
+# class CmdbView(ViewSet):
+#
+#     def get_all(self,request):
+#
+#         pass
+#
+#     def get_object(self,request,pk):
+#
+#         pass
+
+class CmdbView(ModelViewSet):
 
     queryset = DEVICE.objects.all()
     serializer_class = CmdbSerializer
